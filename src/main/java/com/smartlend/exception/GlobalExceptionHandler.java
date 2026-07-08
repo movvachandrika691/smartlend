@@ -98,7 +98,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleMessageNotReadable(
             HttpMessageNotReadableException ex, HttpServletRequest request) {
-                System.out.println("========== GLOBAL HANDLER ==========");
         log.warn("Unreadable request body on {}: {}", request.getRequestURI(), ex.getMessage());
         ErrorResponse response = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
