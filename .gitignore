@@ -1,0 +1,40 @@
+# Maven
+target/
+.mvn/
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.class
+out/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+
+# JWT RSA Keys - NEVER commit these
+src/main/resources/keys/
+*.pem
+*.key
+
+# Logs
+logs/
+*.log
+
+# macOS
+.DS_Store
+__MACOSX/
+
+# Spring Boot profiles with secrets
+application-dev.yml
+application-prod.yml
+application-local.yml
+
+# Docker override file
+docker-compose.override.yml
+
+# Node (just in case)
+node_modules/

@@ -1,0 +1,143 @@
+spring:
+  application:
+    name: SmartLend
+
+  # PostgreSQL Database Configuration
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 300000
+      connection-timeout: 20000
+
+  # JPA / Hibernate Configuration
+  jpa:
+    hibernate:
+      ddl-auto: none            # overridden per profile: update in dev, validate in prod
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    open-in-view: false
+
+  # Redis Configuration
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 2
+
+  # Spring AI Configuration
+  ai:
+    openai:
+      base-url: https://api.groq.com/openai
+      api-key: ${OPENAI_API_KEY}
+      chat:
+        options:
+          model: llama-3.3-70b-versatile
+          temperature: 0.3
+
+  # Jackson JSON Serialization
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    time-zone: Asia/Dubai
+    date-format: yyyy-MM-dd HH:mm:ss
+
+  # RFC-7807 Problem Details — active in all profiles
+  # Note: GlobalExceptionHandler takes priority; this handles any gaps
+  mvc:
+    problemdetails:
+      enabled: false
+
+# Server Configuration
+server:
+  port: ${SERVER_PORT}
+  servlet:
+    context-path: /api
+  error:
+    include-message: always
+    include-binding-errors: always
+
+# JWT RSA Key Configuration
+jwt:
+  private-key: ${JWT_PRIVATE_KEY}
+  public-key: ${JWT_PUBLIC_KEY}
+  expiration: 86400000
+  #expiration: 30000
+  refresh-expiration: 604800000
+  #refresh-expiration: 30000
+
+# Swagger / OpenAPI Configuration
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+    tags-sorter: alpha
+    operations-sorter: method
+    # Show one tag expanded at a time
+    doc-expansion: list
+    # Show how long each API call takes
+    display-request-duration: true
+    # Show schema models collapsed by default — reduces clutter
+    default-models-expand-depth: -1
+    default-model-expand-depth: 1
+    # Remove petstore example from top bar
+    disable-swagger-default-url: true
+    try-it-out-enabled: true
+    # Disable the top search bar URL field
+    validator-url: "none"
+
+# Spring Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when-authorized
+  info:
+    env:
+      enabled: true
+
+# Application Metadata
+info:
+  app:
+    name: SmartLend - AI Loan Risk Assessment System
+    version: 1.0.0
+    description: AI-Powered Loan Risk Assessment and Management System
+
+# Rate Limiting Configuration
+app:
+  rate-limit:
+    capacity: 10
+    refill-tokens: 10
+    refill-duration-minutes: 1
+  redis:
+    cache-ttl-minutes: 30
+  loan:
+    min-amount: 10000
+    max-amount: 50000000
+
+# Logging Configuration
+logging:
+  level:
+    root: INFO
+    com.smartlend: INFO
+    org.springframework.security: INFO
+    org.hibernate.SQL: WARN
