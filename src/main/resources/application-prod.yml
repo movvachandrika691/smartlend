@@ -1,0 +1,78 @@
+# =====================================================
+# PROD PROFILE - Railway / Production Deployment
+# THIS FILE IS GITIGNORED - NEVER PUSHED TO GITHUB
+# Set all variables in Railway dashboard → Variables tab
+# =====================================================
+
+spring:
+  main:
+    banner-mode: off            # no Spring banner in production logs
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=require
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 3         # keep low for free tier DB connection limits
+      minimum-idle: 1
+      idle-timeout: 300000
+      connection-timeout: 20000
+      keepalive-time: 60000         # prevent Neon from closing idle connections
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+      ssl:
+        enabled: true             # Upstash requires SSL
+      timeout: 3000ms
+      lettuce:
+        pool:
+          max-active: 3
+          max-idle: 2
+          min-idle: 0
+        
+
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: validate        # validate schema only — never auto-alter prod DB
+
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: never          # never leak internal messages to client
+    include-binding-errors: never
+    include-stacktrace: never       # never expose stack traces in prod
+    include-exception: false        # never expose exception class names
+  tomcat:
+    threads:
+      max: 10                     # reduce for free tier memory limits
+      min-spare: 2
+
+# Tighter actuator in production
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info        # metrics excluded from public exposure
+  endpoint:
+    health:
+      show-details: never           # never expose internal health details publicly
+
+jwt:
+  private-key: ${JWT_PRIVATE_KEY}
+  public-key: ${JWT_PUBLIC_KEY}
+
+# Minimal logging in production
+logging:
+  level:
+    root: WARN
+    com.smartlend: INFO
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN

@@ -30,7 +30,6 @@ __MACOSX/
 
 # Spring Boot profiles with secrets
 application-dev.yml
-application-prod.yml
 application-local.yml
 
 # Docker override file
