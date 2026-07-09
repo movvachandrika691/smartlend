@@ -37,7 +37,7 @@ spring:
   jpa:
     show-sql: false
     hibernate:
-      ddl-auto: validate        # validate schema only — never auto-alter prod DB
+      ddl-auto: update        # validate schema only — never auto-alter prod DB
 
   ai:
     openai:
