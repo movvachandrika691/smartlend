@@ -1,8 +1,8 @@
-# =====================================================
-# PROD PROFILE - Railway / Production Deployment
+# =============================================================
+# PROD PROFILE - Render / Production Deployment
 # THIS FILE IS GITIGNORED - NEVER PUSHED TO GITHUB
-# Set all variables in Railway dashboard → Variables tab
-# =====================================================
+# Set all variables in Render dashboard → Environment Variables tab
+# =============================================================
 
 spring:
   main:
@@ -37,7 +37,7 @@ spring:
   jpa:
     show-sql: false
     hibernate:
-      ddl-auto: update        # validate schema only — never auto-alter prod DB
+      ddl-auto: validate       # validate schema only — never auto-alter prod DB
 
   ai:
     openai:

@@ -136,12 +136,6 @@ public class SwaggerConfig {
                                 .email("movvachandrika691@gmail.com"))
                 )
 
-                .servers(List.of(
-                        new Server()
-                                .url("http://localhost:" + serverPort + "/api")
-                                .description("Local Development Server")
-                ))
-
                 .addSecurityItem(
                         new SecurityRequirement().addList(SECURITY_SCHEME)
                 )

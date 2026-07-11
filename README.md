@@ -4,7 +4,7 @@ SmartLend is a backend REST API for managing loan applications end to end. Custo
 
 Built with Java 17 and Spring Boot 3. Uses RSA-signed JWT auth, Redis for caching and token blacklisting, and Spring AI for loan risk scoring via Groq LLM.
 
-> **Live Demo** → https://smartlend.up.railway.app/api/swagger-ui.html
+> **Live Demo** → https://smartlend-o9y8.onrender.com/api/swagger-ui/index.html
 
 ---
 
@@ -36,7 +36,7 @@ Built with Java 17 and Spring Boot 3. Uses RSA-signed JWT auth, Redis for cachin
 | Monitoring | Spring Actuator |
 | Containers | Docker + Docker Compose |
 | CI/CD      | GitHub Actions |
-| Hosting    | Railway |
+| Hosting    | Render |
 
 ---
 
@@ -122,9 +122,9 @@ There are three yml files in `src/main/resources/`:
 
 - `application.yml` — base config, no secrets, safe to commit
 - `application-dev.yml` — local dev overrides (Postgres password, Redis host, verbose logging) — gitignored
-- `application-prod.yml` — production overrides (Railway env vars, strict logging, schema validation) — gitignored
+- `application-prod.yml` — production overrides (Rendor env vars, strict logging, schema validation) — gitignored
 
-For local dev, only `application-dev.yml` matters after the base. For production, all values are injected as environment variables via Railway dashboard.
+For local dev, only `application-dev.yml` matters after the base. For production, all values are injected as environment variables via Rendor dashboard.
 
 ---
 
@@ -140,9 +140,9 @@ For local dev, only `application-dev.yml` matters after the base. For production
 
 | Service      | URL                                                  |
 |--------------|------------------------------------------------------|
-| API Base     | https://smartlend.up.railway.app/api                 |
-| Swagger UI   | https://smartlend.up.railway.app/api/swagger-ui.html |
-| Health Check | https://smartlend.up.railway.app/api/actuator/health |
+| API Base     | https://smartlend-o9y8.onrender.com                 |
+| Swagger UI   | https://smartlend-o9y8.onrender.com/api/swagger-ui/index.html |
+| Health Check | https://smartlend-o9y8.onrender.com/api/actuator/health |
 
 ---
 
@@ -240,7 +240,7 @@ GitHub Actions pipeline runs on every push to `main`:
 1. Build with Maven and run tests
 2. Build Docker image
 3. Push image to Docker Hub
-4. Deploy to Railway automatically
+4. Deploy to Rendor automatically
 
 ---
 
