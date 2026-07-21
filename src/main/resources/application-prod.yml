@@ -6,18 +6,18 @@
 
 spring:
   main:
-    banner-mode: off            # no Spring banner in production logs
+    banner-mode: off
 
   datasource:
     url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=require
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     hikari:
-      maximum-pool-size: 3         # keep low for free tier DB connection limits
+      maximum-pool-size: 3
       minimum-idle: 1
       idle-timeout: 300000
       connection-timeout: 20000
-      keepalive-time: 60000         # prevent Neon from closing idle connections
+      keepalive-time: 60000
 
   data:
     redis:
@@ -25,19 +25,24 @@ spring:
       port: ${REDIS_PORT}
       password: ${REDIS_PASSWORD}
       ssl:
-        enabled: true             # Upstash requires SSL
-      timeout: 3000ms
+        enabled: true
+      timeout: 5000ms
       lettuce:
         pool:
           max-active: 3
-          max-idle: 2
-          min-idle: 0
-        
+          max-idle: 3
+          min-idle: 1
+        shutdown-timeout: 100ms
 
   jpa:
     show-sql: false
     hibernate:
-      ddl-auto: validate       # validate schema only — never auto-alter prod DB
+      ddl-auto: validate
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
   ai:
     openai:
@@ -46,30 +51,28 @@ spring:
 server:
   port: ${SERVER_PORT:8080}
   error:
-    include-message: never          # never leak internal messages to client
+    include-message: never
     include-binding-errors: never
-    include-stacktrace: never       # never expose stack traces in prod
-    include-exception: false        # never expose exception class names
+    include-stacktrace: never
+    include-exception: false
   tomcat:
     threads:
-      max: 10                     # reduce for free tier memory limits
+      max: 10
       min-spare: 2
 
-# Tighter actuator in production
 management:
   endpoints:
     web:
       exposure:
-        include: health,info        # metrics excluded from public exposure
+        include: health,info
   endpoint:
     health:
-      show-details: never           # never expose internal health details publicly
+      show-details: never
 
 jwt:
   private-key: ${JWT_PRIVATE_KEY}
   public-key: ${JWT_PUBLIC_KEY}
 
-# Minimal logging in production
 logging:
   level:
     root: WARN
