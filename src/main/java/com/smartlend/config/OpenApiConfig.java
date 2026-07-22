@@ -1,32 +1,32 @@
 package com.smartlend.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
-import org.springframework.context.annotation.Configuration;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.security.SecuritySchemes;
+import org.springframework.context.annotation.Configuration;
+
 /**
- * Additional OpenAPI annotations for security scheme definition.
+ * Defines security schemes via annotations.
  */
 @Configuration
 @OpenAPIDefinition
-@SecurityScheme(
-        name = "Refresh Token",
-        type = SecuritySchemeType.APIKEY,
-        in = SecuritySchemeIn.HEADER,
-        paramName = "Refresh-Token",
-        description = """
-                Paste **only** the `refreshToken` from the login response.
-
-                Example:
-                ```
-                eyJhbGciOiJQUzI1NiJ9.eyJzdWIiOiIxIn0...
-                ```
-
-                Token is valid for **7 days**.
-                """
-)
+@SecuritySchemes({
+        @SecurityScheme(
+                name = "Bearer Authentication",
+                type = SecuritySchemeType.HTTP,
+                scheme = "bearer",
+                bearerFormat = "JWT",
+                description = "Paste only the accessToken from login. Do not include 'Bearer'. Valid for 24 hrs."
+        ),
+        @SecurityScheme(
+                name = "Refresh Token",
+                type = SecuritySchemeType.APIKEY,
+                in = SecuritySchemeIn.HEADER,
+                paramName = "Refresh-Token",
+                description = "Paste only the refreshToken from login. Do not include 'Bearer'. Valid for 7 days."
+        )
+})
 public class OpenApiConfig {
-    // Configuration is done via annotations for security scheme
 }

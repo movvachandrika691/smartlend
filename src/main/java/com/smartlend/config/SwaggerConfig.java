@@ -24,8 +24,8 @@ public class SwaggerConfig {
     @Value("${server.port:8080}")
     private String serverPort;
 
-    // Single consistent security scheme name used everywhere
-    public static final String SECURITY_SCHEME = "Authentication";
+   // Single consistent security scheme name used everywhere
+    public static final String SECURITY_SCHEME = "Bearer Authentication";
 
     @Bean
     public OpenAPI smartLendOpenAPI() {
@@ -56,7 +56,7 @@ public class SwaggerConfig {
  
                                 **Step 3 — Copy Tokens**
                                 The login response returns two tokens:
-                                - `accessToken` — valid for 15 minutes, used to authorize API calls
+                                - `accessToken` — valid for 24 hours, used to authorize API calls
                                 - `refreshToken` — valid for 7 days, used only to get a new access token
  
                                 **Step 4 — Authorize**
@@ -124,23 +124,44 @@ public class SwaggerConfig {
  
                                 ### Key Features
  
-                                - **RSA JWT Authentication** — access token (15 min) + refresh token (7 days) with rotation
+                                - **RSA JWT Authentication** — access token (24 hrs) + refresh token (7 days) with rotation
                                 - **AI Risk Scoring** — automatic LOW / MEDIUM / HIGH risk assessment on loan submission
-                                - **Redis Caching** — loan data cached per page, JWT tokens blacklisted on logout
-                                - **Rate Limiting** — register, login, loan submission and AI chat are rate limited (5/min)
+                                - **Redis Caching** — loan data cached, JWT tokens blacklisted on logout
+                                - **Rate Limiting** — register, login, loan submission and AI chat are rate limited
                                 - **Audit Logging** — all write operations automatically logged via AOP
-                                - **Paginated APIs** — all list endpoints support pagination and sorting
                                 """)
                         .contact(new Contact()
                                 .name("Chandrika Movva")
                                 .email("movvachandrika691@gmail.com"))
                 )
 
+                // security requirement — matches controllers
                 .addSecurityItem(
                         new SecurityRequirement().addList(SECURITY_SCHEME)
                 )
 
-                // Explicit tag order controls sidebar order in Swagger UI
+                .components(new Components()
+                        .addSecuritySchemes(
+                                SECURITY_SCHEME,
+                                new SecurityScheme()
+                                        .name(SECURITY_SCHEME)
+                                        .type(SecurityScheme.Type.HTTP)
+                                        .scheme("bearer")
+                                        .bearerFormat("JWT")
+                                        .description("""
+                                                Paste **only** the `accessToken` from the login response.
+
+                                                Do NOT include the word "Bearer" — Swagger adds it automatically.
+
+                                                Example:
+                                                ```
+                                                eyJhbGciOiJQUzI1NiJ9.eyJzdWIiOiIxIn0...
+                                                ```
+        
+                                                """)
+                        )
+                )
+
                 .tags(List.of(
                         new Tag()
                                 .name("Authentication")
@@ -154,38 +175,15 @@ public class SwaggerConfig {
                         new Tag()
                                 .name("Admin")
                                 .description("Dashboard statistics and audit log access — ADMIN only")
-                ))
-
-                .components(new Components()
-                        .addSecuritySchemes(
-                                SECURITY_SCHEME,
-                                new SecurityScheme()
-                                        .name("Authorization")
-                                        .type(SecurityScheme.Type.HTTP)
-                                        .scheme("bearer")
-                                        .bearerFormat("JWT")
-                                        .description("""
-                                                Paste **only** the `accessToken` from the login response.
-
-                                                Do NOT include the word "Bearer" — Swagger adds it automatically.
-
-                                                Example:
-                                                ```
-                                                eyJhbGciOiJQUzI1NiJ9.eyJzdWIiOiIxIn0...
-                                                ```
-
-                                                Token is valid for **15 minutes**.
-                                                """)
-                        )
-                );
+                ));
     }
-       @Bean
+
+    @Bean
     public OpenApiCustomizer sortOperationsByIdCustomizer() {
         return openApi -> {
             Paths paths = openApi.getPaths();
             if (paths == null) return;
-
-            // LinkedHashMap locks and preserves insertion order
+          // LinkedHashMap locks and preserves insertion order
             Map<String, PathItem> sortedMap = new LinkedHashMap<>();
 
             paths.entrySet().stream()
@@ -210,5 +208,4 @@ public class SwaggerConfig {
         if (pathItem.getPatch() != null && pathItem.getPatch().getOperationId() != null) return pathItem.getPatch().getOperationId();
         return "99_unknown"; // Fallback for endpoints missing an explicit operationId
     }
-
 }

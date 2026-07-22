@@ -45,7 +45,7 @@ public class AuthController {
             description = """
                     Create a new **CUSTOMER** account.
 
-                    Returns an `accessToken` (15 min) and a `refreshToken` (7 days).
+                    Returns an `accessToken` (24 hrs) and a `refreshToken` (7 days).
 
                     > Rate limited to **5 requests per minute** per IP.
                     """
@@ -89,7 +89,7 @@ public class AuthController {
             description = """
                     Authenticate with email and password.
 
-                    Returns an `accessToken` (15 min) and a `refreshToken` (7 days).
+                    Returns an `accessToken` (24 hrs) and a `refreshToken` (7 days).
 
                     Use the `accessToken` in the **Authorize** button at the top of this page.
 
@@ -135,7 +135,7 @@ public class AuthController {
             description = """
                     Exchange a valid **Refresh Token** for a new token pair.
 
-                    - New `accessToken` (15 min)
+                    - New `accessToken` (24 hrs)
                     - New `refreshToken` (7 days)
 
                     The previous refresh token is **immediately revoked** (token rotation).
