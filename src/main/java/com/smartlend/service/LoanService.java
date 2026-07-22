@@ -164,7 +164,8 @@ public class LoanService {
 
         // Try cache first
         List<LoanApplicationResponse> cachedList = redisCacheService.get(listCacheKey);
-        Long cachedTotal = redisCacheService.get(totalCacheKey);
+        Object rawTotal = redisCacheService.get(totalCacheKey);
+        Long cachedTotal = rawTotal != null ? ((Number) rawTotal).longValue() : null;
 
         if (cachedList != null && cachedTotal != null) {
             log.info("Cache hit for key: {}", listCacheKey);
